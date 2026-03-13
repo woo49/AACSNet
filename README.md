@@ -1,85 +1,71 @@
 # AACSNet: Angle-Aware and Context-Sensitive Network for Oriented Object Detection
 
-AACSNet 是一个面向旋转目标检测的深度学习模型，基于 OrientedFormer 架构，通过 **AAFAM（角度感知特征对齐模块）** 和 **CLSM（跨层级协同模块）** 增强航空影像中的目标检测性能。
+## Requirements
 
-## 核心创新
+- Python 3.8 (Ubuntu 20.04)
+- PyTorch 2.0.0
+- CUDA 11.8
+- [MMRotate](https://github.com/open-mmlab/mmrotate) 1.x or a compatible framework (mmrotate, mmdet, mmengine)
 
-- **AAFAM (Angle-Aware Feature Alignment Module)**：处理旋转目标的角度周期性与不确定性，支持周期性编码、旋转采样、多角度融合和角度空间注意力
-- **CLSM (Cross-Level Synergy Module)**：跨尺度上下文融合，通过层级上下文驱动与邻域协同聚合增强多尺度特征
+## Installation
 
-## 环境依赖
+```bash
+pip install torch>=1.8.0 torchvision
+pip install mmengine>=0.1.0
+pip install mmcv>=2.0.0rc2
+pip install mmdet>=3.0.0rc2
+```
 
-- [MMRotate](https://github.com/open-mmlab/mmrotate) 1.x 或兼容框架（含 mmrotate、mmdet、mmengine）
-- PyTorch >= 1.8
+Install MMRotate from source. See the [MMRotate documentation](https://github.com/open-mmlab/mmrotate).
 
-## 安装与目录放置
-
-1. 安装 MMRotate 或 OrientedFormer 及其依赖
-2. 将本 `AACSNet` 文件夹放入框架的 `projects/` 目录下，整体结构为：
-
-   ```
-   框架根目录/
-   ├── projects/
-   │   └── AACSNet/          
-   │       ├── configs/
-   │       ├── orientedformer/
-   │       └── tools/
-   ├── mmrotate/
-   └── ...
-   ```
-
-## AACSNet 目录结构
+## Directory Structure
 
 ```
 AACSNet/
-├── configs/                
-│   ├── ours_le90_r50_hrsc.py      
-│   ├── ours_le90_r50_dotav1.0.py  
-│   └── ours_le90_r50_dior.py      
-├── orientedformer/          
-│   ├── angle_aware_feature_alignment.py  
-│   ├── cross_level_synergy_module.py    
+├── configs/
+│   ├── hrsc.py
+│   ├── dotav1.0.py
+│   └── dior.py
+├── orientedformer/
+│   ├── angle_aware_feature_alignment.py
+│   ├── cross_level_synergy_module.py
 │   ├── oriented_ddq_fcn.py
 │   ├── oriented_ddq_rcnn.py
 │   └── ...
 ├── tools/
-│   ├── train.py           
-│   └── test.py              
+│   ├── train.py
+│   └── test.py
 └── README.md
 ```
 
-## 数据准备
+## Data Preparation
 
-请参考 [MMRotate 数据准备](https://github.com/open-mmlab/mmrotate/tree/main/tools/data) 处理 HRSC2016、DOTA、DIOR-R 等数据集。
+Follow [MMRotate data preparation](https://github.com/open-mmlab/mmrotate/tree/main/tools/data) for HRSC2016, DOTA, DIOR-R, etc.
 
-在对应配置文件中修改 `data_root` 为你的数据路径。
+Set `data_root` in the corresponding config to your data path.
 
-## 训练
-
-在 **框架根目录** 下执行（确保 `projects`、`mmrotate` 位于当前目录）：
+## Training
 
 ```bash
-# HRSC2016（36 epochs，2 GPU）
-PYTHONPATH=$PWD:$PYTHONPATH torchrun --nproc_per_node=2 projects/AACSNet/tools/train.py projects/AACSNet/configs/ours_le90_r50_hrsc.py --launcher pytorch
+# HRSC2016 (36 epochs)
+python tools/train.py configs/hrsc.py
 
-# DOTA v1.0（12 epochs，2 GPU）
-PYTHONPATH=$PWD:$PYTHONPATH torchrun --nproc_per_node=2 projects/AACSNet/tools/train.py projects/AACSNet/configs/ours_le90_r50_dotav1.0.py --launcher pytorch
+# DOTA v1.0 (12 epochs)
+python tools/train.py configs/dotav1.0.py
 
-# DIOR-R（12 epochs，2 GPU）
-PYTHONPATH=$PWD:$PYTHONPATH torchrun --nproc_per_node=2 projects/AACSNet/tools/train.py projects/AACSNet/configs/ours_le90_r50_dior.py --launcher pytorch
+# DIOR-R (12 epochs)
+python tools/train.py configs/dior.py
 ```
 
-## 测试
+## Testing
 
 ```bash
 # HRSC2016
-PYTHONPATH=$PWD:$PYTHONPATH torchrun --nproc_per_node=2 projects/AACSNet/tools/test.py projects/AACSNet/configs/ours_le90_r50_hrsc.py work_dirs/ours_le90_r50_hrsc/epoch_36.pth --launcher pytorch
+python tools/test.py configs/hrsc.py work_dirs/hrsc/epoch_36.pth
 
 # DOTA v1.0
-PYTHONPATH=$PWD:$PYTHONPATH torchrun --nproc_per_node=2 projects/AACSNet/tools/test.py projects/AACSNet/configs/ours_le90_r50_dotav1.0.py work_dirs/ours_le90_r50_dotav1.0/epoch_12.pth --launcher pytorch
+python tools/test.py configs/dotav1.0.py work_dirs/dotav1.0/epoch_12.pth
 
 # DIOR-R
-PYTHONPATH=$PWD:$PYTHONPATH torchrun --nproc_per_node=2 projects/AACSNet/tools/test.py projects/AACSNet/configs/ours_le90_r50_dior.py work_dirs/ours_le90_r50_dior/epoch_12.pth --launcher pytorch
+python tools/test.py configs/dior.py work_dirs/dior/epoch_12.pth
 ```
-
-
