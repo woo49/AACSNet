@@ -1,0 +1,13 @@
+torch==2.0.0
+torchvision==0.15.1
+
+mmengine>=0.7.0
+mmcv>=2.0.0rc2,<2.1.0
+mmdet>=3.0.0rc2,<3.1.0
+mmrotate>=1.0.0rc1
+
+numpy
+matplotlib
+pycocotools
+six
+terminaltables
