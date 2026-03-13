@@ -40,7 +40,7 @@ AACSNet/
 
 ## Data Preparation
 
-Follow [MMRotate data preparation](https://github.com/open-mmlab/mmrotate/tree/main/tools/data) for HRSC2016, DOTA, DIOR-R, etc.
+Follow [MMRotate data preparation](https://github.com/open-mmlab/mmrotate/tree/main/tools/data) for HRSC2016, DOTA, DIOR-R.
 
 Set `data_root` in the corresponding config to your data path.
 
